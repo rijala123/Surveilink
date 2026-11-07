@@ -50,8 +50,12 @@ try {
                     'nik' => '3171051204890001',
                     'nama' => 'Ahmad Fauzi',
                     'jk' => 'L',
+                    'cara_bayar' => 'Pembayaran BPJS',
+                    'tempat_lahir' => 'Jakarta',
                     'tgl_lahir' => '1989-04-12',
                     'usia' => 37,
+                    'agama' => 'Islam',
+                    'status_kawin' => 'Kawin',
                     'alamat' => 'Jl. Salemba Raya No. 14, Kenari, Senen, Jakarta Pusat',
                     'kelurahan' => 'Kenari',
                     'kecamatan' => 'Senen',
@@ -71,8 +75,12 @@ try {
                     'nik' => '3171025508930004',
                     'nama' => 'Dewi Lestari',
                     'jk' => 'P',
+                    'cara_bayar' => 'Pembayaran BPJS',
+                    'tempat_lahir' => 'Bandung',
                     'tgl_lahir' => '1993-08-15',
                     'usia' => 33,
+                    'agama' => 'Islam',
+                    'status_kawin' => 'Kawin',
                     'alamat' => 'Jl. Kramat Pulo Gundul No. 5, Tanah Tinggi, Johar Baru',
                     'kelurahan' => 'Tanah Tinggi',
                     'kecamatan' => 'Johar Baru',
@@ -92,8 +100,12 @@ try {
                     'nik' => '3171011802010002',
                     'nama' => 'Bambang Trianto',
                     'jk' => 'L',
+                    'cara_bayar' => 'Pembayaran Umum',
+                    'tempat_lahir' => 'Surabaya',
                     'tgl_lahir' => '2001-02-18',
                     'usia' => 25,
+                    'agama' => 'Islam',
+                    'status_kawin' => 'Belum Kawin',
                     'alamat' => 'Jl. Percetakan Negara IX No. 22, Rawasari, Cempaka Putih',
                     'kelurahan' => 'Rawasari',
                     'kecamatan' => 'Cempaka Putih',
@@ -113,8 +125,12 @@ try {
                     'nik' => '3171046011150003',
                     'nama' => 'Siti Nurhaliza (Anak)',
                     'jk' => 'P',
+                    'cara_bayar' => 'Pembayaran BPJS',
+                    'tempat_lahir' => 'Jakarta',
                     'tgl_lahir' => '2015-11-20',
                     'usia' => 10,
+                    'agama' => 'Islam',
+                    'status_kawin' => 'Belum Kawin',
                     'alamat' => 'Jl. Kebon Kosong No. 18, Kemayoran, Jakarta Pusat',
                     'kelurahan' => 'Kebon Kosong',
                     'kecamatan' => 'Kemayoran',
@@ -134,8 +150,12 @@ try {
                     'nik' => '3171060309650005',
                     'nama' => 'H. Suwandi',
                     'jk' => 'L',
+                    'cara_bayar' => 'Pembayaran Asuransi',
+                    'tempat_lahir' => 'Semarang',
                     'tgl_lahir' => '1965-09-03',
                     'usia' => 61,
+                    'agama' => 'Islam',
+                    'status_kawin' => 'Kawin',
                     'alamat' => 'Jl. Gunung Sahari Raya No. 41, Kemayoran',
                     'kelurahan' => 'Gunung Sahari Selatan',
                     'kecamatan' => 'Kemayoran',
@@ -155,8 +175,12 @@ try {
                     'nik' => '3171050101880007',
                     'nama' => 'Rudi Hermawan',
                     'jk' => 'L',
+                    'cara_bayar' => 'Pembayaran BPJS',
+                    'tempat_lahir' => 'Jakarta',
                     'tgl_lahir' => '1988-01-01',
                     'usia' => 38,
+                    'agama' => 'Islam',
+                    'status_kawin' => 'Kawin',
                     'alamat' => 'Jl. Bendungan Hilir Gang V No. 8, Tanah Abang',
                     'kelurahan' => 'Bendungan Hilir',
                     'kecamatan' => 'Tanah Abang',
@@ -178,8 +202,8 @@ try {
             $stmtCheck = $pdo->prepare("SELECT id FROM data_masuk WHERE no_registrasi = ?");
             $stmtInsert = $pdo->prepare("
                 INSERT INTO data_masuk 
-                (no_registrasi, unit_sumber, no_rm, nik, nama_pasien, jenis_kelamin, tanggal_lahir, usia, alamat, kelurahan, kecamatan, kota_kab, tanggal_masuk, diagnosa_awal, kode_icd10, kategori_penyakit, hasil_lab, terapi_farmasi, status_kelengkapan, status_validasi, catatan_anomali, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+                (no_registrasi, unit_sumber, no_rm, nik, nama_pasien, jenis_kelamin, cara_pembayaran, tempat_lahir, tanggal_lahir, usia, agama, status_perkawinan, alamat, kelurahan, kecamatan, kota_kab, tanggal_masuk, diagnosa_awal, kode_icd10, kategori_penyakit, hasil_lab, terapi_farmasi, status_kelengkapan, status_validasi, catatan_anomali, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, NOW())
             ");
 
             foreach ($sampleCases as $idx => $case) {
@@ -198,8 +222,12 @@ try {
                         $case['nik'],
                         $case['nama'],
                         $case['jk'],
+                        $case['cara_bayar'] ?? 'Pembayaran BPJS',
+                        $case['tempat_lahir'] ?? 'Jakarta',
                         $case['tgl_lahir'],
                         $case['usia'],
+                        $case['agama'] ?? 'Islam',
+                        $case['status_kawin'] ?? 'Kawin',
                         $case['alamat'],
                         $case['kelurahan'],
                         $case['kecamatan'],
@@ -248,19 +276,29 @@ try {
         // 3. TAMBAH DATA PASIEN MANUAL
         // -------------------------------------------------------------------------
         case 'add_patient':
-            $no_rm    = trim($_POST['no_rm'] ?? '');
-            $nik      = trim($_POST['nik'] ?? '');
-            $nama     = trim($_POST['nama_pasien'] ?? '');
-            $jk       = $_POST['jenis_kelamin'] ?? 'L';
-            $tgl_lhr  = $_POST['tanggal_lahir'] ?? '1990-01-01';
-            $usia     = intval($_POST['usia'] ?? 30);
-            $unit     = $_POST['unit_sumber'] ?? 'IGD';
-            $alamat   = trim($_POST['alamat'] ?? '');
-            $diagnosa = trim($_POST['diagnosa_awal'] ?? '');
-            $icd10    = trim($_POST['kode_icd10'] ?? '');
-            $kategori = trim($_POST['kategori_penyakit'] ?? 'Lainnya');
-            $hasil_lab= trim($_POST['hasil_lab'] ?? '');
-            $farmasi  = trim($_POST['terapi_farmasi'] ?? '');
+            $no_rm        = trim($_POST['no_rm'] ?? '');
+            $nik          = trim($_POST['nik'] ?? '');
+            $nama         = trim($_POST['nama_pasien'] ?? '');
+            $jk           = $_POST['jenis_kelamin'] ?? 'L';
+            $cara_bayar   = trim($_POST['cara_pembayaran'] ?? 'Pembayaran BPJS');
+            if (!in_array($cara_bayar, ['Pembayaran Umum', 'Pembayaran BPJS', 'Pembayaran Asuransi'])) {
+                $cara_bayar = 'Pembayaran BPJS';
+            }
+            $tempat_lahir = trim($_POST['tempat_lahir'] ?? 'Jakarta');
+            if (empty($tempat_lahir)) $tempat_lahir = 'Jakarta';
+            $tgl_lhr      = !empty($_POST['tanggal_lahir']) ? $_POST['tanggal_lahir'] : '1995-01-01';
+            $usia         = intval($_POST['usia'] ?? 30);
+            $agama        = trim($_POST['agama'] ?? 'Islam');
+            if (empty($agama)) $agama = 'Islam';
+            $status_kawin = trim($_POST['status_perkawinan'] ?? 'Kawin');
+            if (empty($status_kawin)) $status_kawin = 'Kawin';
+            $unit         = $_POST['unit_sumber'] ?? 'IGD';
+            $alamat       = trim($_POST['alamat'] ?? '');
+            $diagnosa     = !empty($_POST['diagnosa_awal']) ? trim($_POST['diagnosa_awal']) : 'Dalam Pemeriksaan Klinis';
+            $icd10        = !empty($_POST['kode_icd10']) ? trim($_POST['kode_icd10']) : '-';
+            $kategori     = !empty($_POST['kategori_penyakit']) ? trim($_POST['kategori_penyakit']) : 'Menunggu Diagnosis';
+            $hasil_lab    = trim($_POST['hasil_lab'] ?? '');
+            $farmasi      = trim($_POST['terapi_farmasi'] ?? '');
 
             if (empty($nama) || empty($no_rm) || empty($nik)) {
                 echo json_encode(['success' => false, 'message' => 'No RM, NIK, dan Nama Pasien wajib diisi!']);
@@ -270,19 +308,175 @@ try {
             $regId = 'REG-' . $unit . '-' . date('Ymd') . '-' . rand(1000, 9999);
             $stmt = $pdo->prepare("
                 INSERT INTO data_masuk 
-                (no_registrasi, unit_sumber, no_rm, nik, nama_pasien, jenis_kelamin, tanggal_lahir, usia, alamat, kota_kab, tanggal_masuk, diagnosa_awal, kode_icd10, kategori_penyakit, hasil_lab, terapi_farmasi, status_kelengkapan, status_validasi, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Jakarta Pusat', NOW(), ?, ?, ?, ?, ?, 'Lengkap', 'Menunggu', NOW())
+                (no_registrasi, unit_sumber, no_rm, nik, nama_pasien, jenis_kelamin, cara_pembayaran, tempat_lahir, tanggal_lahir, usia, agama, status_perkawinan, alamat, kota_kab, tanggal_masuk, diagnosa_awal, kode_icd10, kategori_penyakit, hasil_lab, terapi_farmasi, status_kelengkapan, status_validasi, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Jakarta Pusat', NOW(), ?, ?, ?, ?, ?, 'Tidak Lengkap', 'Menunggu', NOW())
             ");
             $stmt->execute([
-                $regId, $unit, $no_rm, $nik, $nama, $jk, $tgl_lhr, $usia, $alamat, $diagnosa, $icd10, $kategori, $hasil_lab, $farmasi
+                $regId, $unit, $no_rm, $nik, $nama, $jk, $cara_bayar, $tempat_lahir, $tgl_lhr, $usia, $agama, $status_kawin, $alamat, $diagnosa, $icd10, $kategori, $hasil_lab, $farmasi
             ]);
 
             // Update unit stats
             $pdo->prepare("UPDATE sumber_data_unit SET total_data_masuk = total_data_masuk + 1, terakhir_sinkron = NOW() WHERE kode_unit = ?")->execute([$unit]);
 
-            addAuditLog('Input Pasien Manual', 'Data Masuk', "Input manual pasien No. RM {$no_rm} ({$nama}) oleh " . ($_SESSION['user']['username'] ?? 'admin'));
+            addAuditLog('Input Pasien Manual', 'Data Masuk', "Input manual pasien No. RM {$no_rm} ({$nama}) [{$cara_bayar}] unit {$unit} oleh " . ($_SESSION['user']['username'] ?? 'admin'));
 
-            echo json_encode(['success' => true, 'message' => 'Data pasien surveilans berhasil ditambahkan ke Data Masuk!']);
+            echo json_encode(['success' => true, 'message' => 'Data pasien berhasil ditambahkan ke Data Masuk!']);
+            break;
+
+        // -------------------------------------------------------------------------
+        // 3B. EDIT DATA PASIEN
+        // -------------------------------------------------------------------------
+        case 'edit_patient':
+            $id           = intval($_POST['id'] ?? 0);
+            $no_rm        = trim($_POST['no_rm'] ?? '');
+            $nik          = trim($_POST['nik'] ?? '');
+            $nama         = trim($_POST['nama_pasien'] ?? '');
+            $jk           = $_POST['jenis_kelamin'] ?? 'L';
+            $cara_bayar   = trim($_POST['cara_pembayaran'] ?? 'Pembayaran BPJS');
+            if (!in_array($cara_bayar, ['Pembayaran Umum', 'Pembayaran BPJS', 'Pembayaran Asuransi'])) {
+                $cara_bayar = 'Pembayaran BPJS';
+            }
+            $tempat_lahir = trim($_POST['tempat_lahir'] ?? 'Jakarta');
+            if (empty($tempat_lahir)) $tempat_lahir = 'Jakarta';
+            $tgl_lhr      = !empty($_POST['tanggal_lahir']) ? $_POST['tanggal_lahir'] : '1990-01-01';
+            $usia         = intval($_POST['usia'] ?? 30);
+            $agama        = trim($_POST['agama'] ?? 'Islam');
+            if (empty($agama)) $agama = 'Islam';
+            $status_kawin = trim($_POST['status_perkawinan'] ?? 'Kawin');
+            if (empty($status_kawin)) $status_kawin = 'Kawin';
+            $unit         = $_POST['unit_sumber'] ?? 'IGD';
+            $alamat       = trim($_POST['alamat'] ?? '');
+
+            if (empty($id) || empty($nama) || empty($no_rm) || empty($nik)) {
+                echo json_encode(['success' => false, 'message' => 'ID, No RM, NIK, dan Nama Pasien wajib diisi!']);
+                exit;
+            }
+
+            $stmtCheck = $pdo->prepare("SELECT * FROM data_masuk WHERE id = ?");
+            $stmtCheck->execute([$id]);
+            $oldData = $stmtCheck->fetch();
+
+            if (!$oldData) {
+                echo json_encode(['success' => false, 'message' => 'Data pasien tidak ditemukan!']);
+                exit;
+            }
+
+            // Pertahankan diagnosa, ICD-10, hasil lab jika tidak dikirimkan dari form edit
+            $diagnosa     = isset($_POST['diagnosa_awal']) ? trim($_POST['diagnosa_awal']) : ($oldData['diagnosa_awal'] ?? 'Dalam Pemeriksaan Klinis');
+            $icd10        = isset($_POST['kode_icd10']) ? trim($_POST['kode_icd10']) : ($oldData['kode_icd10'] ?? '-');
+            $kategori     = isset($_POST['kategori_penyakit']) ? trim($_POST['kategori_penyakit']) : ($oldData['kategori_penyakit'] ?? 'Menunggu Diagnosis');
+            $hasil_lab    = isset($_POST['hasil_lab']) ? trim($_POST['hasil_lab']) : ($oldData['hasil_lab'] ?? '');
+            $farmasi      = isset($_POST['terapi_farmasi']) ? trim($_POST['terapi_farmasi']) : ($oldData['terapi_farmasi'] ?? '');
+
+            $pdo->beginTransaction();
+
+            $stmt = $pdo->prepare("
+                UPDATE data_masuk SET 
+                    unit_sumber = ?,
+                    no_rm = ?,
+                    nik = ?,
+                    nama_pasien = ?,
+                    jenis_kelamin = ?,
+                    cara_pembayaran = ?,
+                    tempat_lahir = ?,
+                    tanggal_lahir = ?,
+                    usia = ?,
+                    agama = ?,
+                    status_perkawinan = ?,
+                    alamat = ?,
+                    diagnosa_awal = ?,
+                    kode_icd10 = ?,
+                    kategori_penyakit = ?,
+                    hasil_lab = ?,
+                    terapi_farmasi = ?
+                WHERE id = ?
+            ");
+            $stmt->execute([
+                $unit, $no_rm, $nik, $nama, $jk, $cara_bayar, $tempat_lahir, $tgl_lhr, $usia, $agama, $status_kawin, $alamat, $diagnosa, $icd10, $kategori, $hasil_lab, $farmasi, $id
+            ]);
+
+            // Jika data ini sudah pernah divalidasi ke data_terpadu, sinkronkan juga data_terpadu
+            $stmtUpdateSSOT = $pdo->prepare("
+                UPDATE data_terpadu SET 
+                    no_rm = ?,
+                    nik = ?,
+                    nama_pasien = ?,
+                    jenis_kelamin = ?,
+                    cara_pembayaran = ?,
+                    tempat_lahir = ?,
+                    tanggal_lahir = ?,
+                    usia = ?,
+                    agama = ?,
+                    status_perkawinan = ?,
+                    alamat_lengkap = ?,
+                    unit_layanan = ?,
+                    kode_icd10 = ?,
+                    nama_penyakit = ?,
+                    kategori_surveilans = ?,
+                    hasil_lab_terpadu = ?
+                WHERE data_masuk_id = ?
+            ");
+            $stmtUpdateSSOT->execute([
+                $no_rm, $nik, $nama, $jk, $cara_bayar, $tempat_lahir, $tgl_lhr, $usia, $agama, $status_kawin, $alamat, $unit, $icd10, $diagnosa, $kategori, $hasil_lab, $id
+            ]);
+
+            $pdo->commit();
+
+            addAuditLog('Edit Pasien', 'Data Masuk', "Perubahan data pasien No. RM {$no_rm} ({$nama}) oleh " . ($_SESSION['user']['username'] ?? 'admin'));
+
+            echo json_encode(['success' => true, 'message' => 'Data pasien berhasil diperbarui!']);
+            break;
+
+        // -------------------------------------------------------------------------
+        // 3C. HAPUS DATA PASIEN
+        // -------------------------------------------------------------------------
+        case 'delete_patient':
+            $id = intval($_POST['id'] ?? 0);
+            if (empty($id)) {
+                echo json_encode(['success' => false, 'message' => 'ID data tidak valid!']);
+                exit;
+            }
+
+            $stmtCheck = $pdo->prepare("SELECT * FROM data_masuk WHERE id = ?");
+            $stmtCheck->execute([$id]);
+            $oldData = $stmtCheck->fetch();
+
+            if (!$oldData) {
+                echo json_encode(['success' => false, 'message' => 'Data pasien tidak ditemukan!']);
+                exit;
+            }
+
+            $pdo->beginTransaction();
+
+            // Hapus dari data_terpadu jika ada relasi
+            $pdo->prepare("DELETE FROM data_terpadu WHERE data_masuk_id = ?")->execute([$id]);
+
+            // Hapus dari data_masuk
+            $pdo->prepare("DELETE FROM data_masuk WHERE id = ?")->execute([$id]);
+
+            // Update hitungan unit sumber jika > 0
+            $pdo->prepare("UPDATE sumber_data_unit SET total_data_masuk = GREATEST(0, total_data_masuk - 1) WHERE kode_unit = ?")->execute([$oldData['unit_sumber']]);
+
+            $pdo->commit();
+
+            addAuditLog('Hapus Pasien', 'Data Masuk', "Hapus data pasien No. RM {$oldData['no_rm']} ({$oldData['nama_pasien']}) dari unit {$oldData['unit_sumber']}");
+
+            echo json_encode(['success' => true, 'message' => 'Data pasien berhasil dihapus!']);
+            break;
+
+        // -------------------------------------------------------------------------
+        // 3D. GET SINGLE PATIENT DATA (UNTUK MODAL EDIT)
+        // -------------------------------------------------------------------------
+        case 'get_patient':
+            $id = intval($_GET['id'] ?? $_POST['id'] ?? 0);
+            $stmt = $pdo->prepare("SELECT * FROM data_masuk WHERE id = ?");
+            $stmt->execute([$id]);
+            $data = $stmt->fetch();
+            if ($data) {
+                echo json_encode(['success' => true, 'data' => $data]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Data pasien tidak ditemukan!']);
+            }
             break;
 
         // -------------------------------------------------------------------------
@@ -321,8 +515,8 @@ try {
             if (!$exists) {
                 $stmtInsertSSOT = $pdo->prepare("
                     INSERT INTO data_terpadu 
-                    (data_masuk_id, no_rm, nik, nama_pasien, jenis_kelamin, tanggal_lahir, usia, alamat_lengkap, unit_layanan, tanggal_masuk, kondisi_keluar, kode_icd10, nama_penyakit, kategori_surveilans, hasil_lab_terpadu, status_sirs, tgl_validasi, petugas_validasi, created_at)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Dalam Perawatan', ?, ?, ?, ?, 'Belum Dikirim', NOW(), ?, NOW())
+                    (data_masuk_id, no_rm, nik, nama_pasien, jenis_kelamin, cara_pembayaran, tempat_lahir, tanggal_lahir, usia, agama, status_perkawinan, alamat_lengkap, unit_layanan, tanggal_masuk, kondisi_keluar, kode_icd10, nama_penyakit, kategori_surveilans, hasil_lab_terpadu, status_sirs, tgl_validasi, petugas_validasi, created_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Dalam Perawatan', ?, ?, ?, ?, 'Belum Dikirim', NOW(), ?, NOW())
                 ");
                 $petugas = $_SESSION['user']['nama_lengkap'] ?? 'dr. Hendra Pratama, Sp.A (Admin Surveilans)';
                 $stmtInsertSSOT->execute([
@@ -331,8 +525,12 @@ try {
                     $data['nik'],
                     $data['nama_pasien'],
                     $data['jenis_kelamin'],
+                    $data['cara_pembayaran'] ?? 'Pembayaran BPJS',
+                    $data['tempat_lahir'] ?? 'Jakarta',
                     $data['tanggal_lahir'],
                     $data['usia'],
+                    $data['agama'] ?? 'Islam',
+                    $data['status_perkawinan'] ?? 'Kawin',
                     $data['alamat'],
                     $data['unit_sumber'],
                     $data['tanggal_masuk'],
@@ -372,8 +570,8 @@ try {
                     if (!$stmtCheck->fetch()) {
                         $stmtInsertSSOT = $pdo->prepare("
                             INSERT INTO data_terpadu 
-                            (data_masuk_id, no_rm, nik, nama_pasien, jenis_kelamin, tanggal_lahir, usia, alamat_lengkap, unit_layanan, tanggal_masuk, kondisi_keluar, kode_icd10, nama_penyakit, kategori_surveilans, hasil_lab_terpadu, status_sirs, tgl_validasi, petugas_validasi, created_at)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Dalam Perawatan', ?, ?, ?, ?, 'Belum Dikirim', NOW(), ?, NOW())
+                            (data_masuk_id, no_rm, nik, nama_pasien, jenis_kelamin, cara_pembayaran, tempat_lahir, tanggal_lahir, usia, agama, status_perkawinan, alamat_lengkap, unit_layanan, tanggal_masuk, kondisi_keluar, kode_icd10, nama_penyakit, kategori_surveilans, hasil_lab_terpadu, status_sirs, tgl_validasi, petugas_validasi, created_at)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Dalam Perawatan', ?, ?, ?, ?, 'Belum Dikirim', NOW(), ?, NOW())
                         ");
                         $petugas = $_SESSION['user']['nama_lengkap'] ?? 'dr. Hendra Pratama, Sp.A';
                         $stmtInsertSSOT->execute([
@@ -382,8 +580,12 @@ try {
                             $data['nik'],
                             $data['nama_pasien'],
                             $data['jenis_kelamin'],
+                            $data['cara_pembayaran'] ?? 'Pembayaran BPJS',
+                            $data['tempat_lahir'] ?? 'Jakarta',
                             $data['tanggal_lahir'],
                             $data['usia'],
+                            $data['agama'] ?? 'Islam',
+                            $data['status_perkawinan'] ?? 'Kawin',
                             $data['alamat'],
                             $data['unit_sumber'],
                             $data['tanggal_masuk'],
@@ -450,7 +652,12 @@ try {
                     'nik' => $rec['nik'],
                     'nama_pasien' => $rec['nama_pasien'],
                     'jenis_kelamin' => $rec['jenis_kelamin'],
+                    'cara_pembayaran' => $rec['cara_pembayaran'] ?? 'Pembayaran BPJS',
+                    'tempat_lahir' => $rec['tempat_lahir'] ?? 'Jakarta',
+                    'tanggal_lahir' => $rec['tanggal_lahir'],
                     'usia' => $rec['usia'],
+                    'agama' => $rec['agama'] ?? 'Islam',
+                    'status_perkawinan' => $rec['status_perkawinan'] ?? 'Kawin',
                     'alamat' => $rec['alamat_lengkap'],
                     'icd10' => $rec['kode_icd10'],
                     'diagnosa' => $rec['nama_penyakit'],

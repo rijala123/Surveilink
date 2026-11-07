@@ -163,6 +163,25 @@ $readyForSirs = count(array_filter($terpaduList, fn($x) => $x['status_sirs'] ===
                                             <?= $row['jenis_kelamin'] === 'L' ? 'Laki-laki' : 'Perempuan' ?>, <?= $row['usia'] ?> th | 
                                             ID: <span class="font-mono text-slate-700 font-bold">#SSOT-<?= sprintf('%04d', $row['id']) ?></span>
                                         </div>
+                                        <div class="mt-1 flex items-center gap-1.5">
+                                            <?php if (($row['cara_pembayaran'] ?? '') === 'Pembayaran BPJS'): ?>
+                                                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                                    <i class="fa-solid fa-id-card text-[9px]"></i> BPJS
+                                                </span>
+                                            <?php elseif (($row['cara_pembayaran'] ?? '') === 'Pembayaran Umum'): ?>
+                                                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                                                    <i class="fa-solid fa-wallet text-[9px]"></i> Umum
+                                                </span>
+                                            <?php elseif (($row['cara_pembayaran'] ?? '') === 'Pembayaran Asuransi'): ?>
+                                                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-purple-50 text-purple-700 border border-purple-200">
+                                                    <i class="fa-solid fa-shield-halved text-[9px]"></i> Asuransi
+                                                </span>
+                                            <?php else: ?>
+                                                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600">
+                                                    <?= htmlspecialchars($row['cara_pembayaran'] ?? 'Pembayaran BPJS') ?>
+                                                </span>
+                                            <?php endif; ?>
+                                        </div>
                                     </td>
                                     <td class="p-3.5">
                                         <div class="font-mono font-bold text-slate-800">RM: <?= htmlspecialchars($row['no_rm']) ?></div>
@@ -225,6 +244,9 @@ $readyForSirs = count(array_filter($terpaduList, fn($x) => $x['status_sirs'] ===
                         <p><b>No. Rekam Medis:</b> ${row.no_rm}</p>
                         <p><b>NIK (Kemenkes):</b> ${row.nik}</p>
                         <p><b>Jenis Kelamin / Usia:</b> ${row.jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan'}, ${row.usia} tahun</p>
+                        <p><b>Tempat, Tgl Lahir:</b> ${row.tempat_lahir || 'Jakarta'}, ${row.tanggal_lahir ? new Date(row.tanggal_lahir).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}) : '-'}</p>
+                        <p><b>Agama / Status:</b> ${row.agama || 'Islam'} / ${row.status_perkawinan || 'Kawin'}</p>
+                        <p><b>Cara Pembayaran:</b> <span class="font-semibold text-brand-600">${row.cara_pembayaran || 'Pembayaran BPJS'}</span></p>
                         <p><b>Alamat Lengkap:</b> ${row.alamat_lengkap}</p>
                     </div>
                     <div class="p-3 rounded-xl bg-brand-50 border border-brand-200 mb-2">

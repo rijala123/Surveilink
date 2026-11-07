@@ -174,6 +174,25 @@ $totalCount = count($dataMasukList);
                                             RM: <span class="font-mono font-semibold text-slate-700"><?= htmlspecialchars($row['no_rm']) ?></span> | 
                                             <?= $row['jenis_kelamin'] === 'L' ? 'Laki-laki' : 'Perempuan' ?>, <?= $row['usia'] ?> th
                                         </div>
+                                        <div class="mt-1 flex items-center gap-1.5">
+                                            <?php if (($row['cara_pembayaran'] ?? '') === 'Pembayaran BPJS'): ?>
+                                                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                                    <i class="fa-solid fa-id-card text-[9px]"></i> BPJS
+                                                </span>
+                                            <?php elseif (($row['cara_pembayaran'] ?? '') === 'Pembayaran Umum'): ?>
+                                                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                                                    <i class="fa-solid fa-wallet text-[9px]"></i> Umum
+                                                </span>
+                                            <?php elseif (($row['cara_pembayaran'] ?? '') === 'Pembayaran Asuransi'): ?>
+                                                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-purple-50 text-purple-700 border border-purple-200">
+                                                    <i class="fa-solid fa-shield-halved text-[9px]"></i> Asuransi
+                                                </span>
+                                            <?php else: ?>
+                                                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600">
+                                                    <?= htmlspecialchars($row['cara_pembayaran'] ?? 'Pembayaran BPJS') ?>
+                                                </span>
+                                            <?php endif; ?>
+                                        </div>
                                     </td>
                                     <td class="p-3.5">
                                         <div class="font-mono text-slate-700 font-medium"><?= htmlspecialchars($row['nik']) ?></div>
@@ -217,6 +236,12 @@ $totalCount = count($dataMasukList);
                                         <div class="flex items-center justify-end gap-1.5">
                                             <button onclick='lihatDetail(<?= json_encode($row) ?>)' class="p-1.5 rounded-lg text-slate-500 hover:text-brand-600 hover:bg-slate-100 transition" title="Lihat Detail Pasien">
                                                 <i class="fa-solid fa-eye text-xs"></i>
+                                            </button>
+                                            <button onclick='bukaModalEdit(<?= json_encode($row) ?>)' class="p-1.5 rounded-lg text-amber-600 hover:text-amber-700 hover:bg-amber-50 transition" title="Edit Data Pasien">
+                                                <i class="fa-solid fa-pen-to-square text-xs"></i>
+                                            </button>
+                                            <button onclick="hapusPasien(<?= $row['id'] ?>, '<?= htmlspecialchars(addslashes($row['nama_pasien'])) ?>')" class="p-1.5 rounded-lg text-rose-500 hover:text-rose-700 hover:bg-rose-50 transition" title="Hapus Data Pasien">
+                                                <i class="fa-solid fa-trash-can text-xs"></i>
                                             </button>
                                             <?php if ($row['status_validasi'] === 'Menunggu'): ?>
                                                 <button onclick="validasiCepat(<?= $row['id'] ?>)" class="px-2 py-1 rounded-lg bg-brand-50 hover:bg-brand-100 text-brand-700 text-[11px] font-semibold border border-brand-200 transition">
@@ -281,34 +306,49 @@ $totalCount = count($dataMasukList);
                     </select>
                 </div>
                 <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Cara Pembayaran*</label>
+                    <select name="cara_pembayaran" required class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-brand-500">
+                        <option value="Pembayaran BPJS" selected>Pembayaran BPJS</option>
+                        <option value="Pembayaran Umum">Pembayaran Umum</option>
+                        <option value="Pembayaran Asuransi">Pembayaran Asuransi</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Tempat Lahir</label>
+                    <input type="text" name="tempat_lahir" placeholder="Contoh: Jakarta" value="Jakarta" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Tanggal Lahir*</label>
+                    <input type="date" id="tambah_tanggal_lahir" name="tanggal_lahir" value="<?= date('Y-m-d', strtotime('-28 years')) ?>" onchange="hitungUsia(this, 'tambah_usia')" required class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">Usia (Tahun)</label>
-                    <input type="number" name="usia" value="28" min="0" max="120" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500">
+                    <input type="number" id="tambah_usia" name="usia" value="28" min="0" max="120" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Agama</label>
+                    <select name="agama" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-brand-500">
+                        <option value="Islam" selected>Islam</option>
+                        <option value="Kristen Protestan">Kristen Protestan</option>
+                        <option value="Katolik">Katolik</option>
+                        <option value="Hindu">Hindu</option>
+                        <option value="Buddha">Buddha</option>
+                        <option value="Konghucu">Konghucu</option>
+                        <option value="Lainnya">Lainnya</option>
+                    </select>
                 </div>
                 <div class="sm:col-span-2">
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Diagnosa Klinis Awal*</label>
-                    <input type="text" name="diagnosa_awal" required placeholder="Contoh: Demam Berdarah Dengue (DBD) Grade I" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Kode ICD-10*</label>
-                    <input type="text" name="kode_icd10" required placeholder="Contoh: A91" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Kategori Surveilans</label>
-                    <select name="kategori_penyakit" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-brand-500">
-                        <option value="Demam Berdarah Dengue (DBD)">Demam Berdarah Dengue (DBD)</option>
-                        <option value="Tuberkulosis (TBC)">Tuberkulosis (TBC)</option>
-                        <option value="ISPA Berat / SARI">ISPA Berat / SARI</option>
-                        <option value="Diare Akut & Kolera">Diare Akut & Kolera</option>
-                        <option value="Campak / Rubella">Campak / Rubella</option>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Status Perkawinan</label>
+                    <select name="status_perkawinan" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-brand-500">
+                        <option value="Belum Kawin">Belum Kawin</option>
+                        <option value="Kawin" selected>Kawin</option>
+                        <option value="Cerai Hidup">Cerai Hidup</option>
+                        <option value="Cerai Mati">Cerai Mati</option>
                     </select>
                 </div>
                 <div class="sm:col-span-2">
                     <label class="block text-xs font-semibold text-slate-700 mb-1">Alamat Lengkap</label>
                     <textarea name="alamat" rows="2" placeholder="Jl. Salemba Tengah No. 12, Senen, Jakarta Pusat" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500"></textarea>
-                </div>
-                <div class="sm:col-span-2">
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Hasil Uji Laboratorium</label>
-                    <input type="text" name="hasil_lab" placeholder="Contoh: NS1 Positif, Trombosit 74.000 /uL" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500">
                 </div>
             </div>
 
@@ -320,12 +360,220 @@ $totalCount = count($dataMasukList);
     </div>
 </div>
 
+<!-- Modal Edit Data Pasien -->
+<div id="modalEdit" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto custom-scrollbar shadow-2xl border border-slate-200">
+        <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+            <div>
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square text-amber-600"></i>
+                    <span>Edit Data Pasien Surveilans</span>
+                </h3>
+                <p class="text-xs text-slate-500">Perbarui data rekam medis, NIK, diagnosa, ICD-10, atau hasil lab.</p>
+            </div>
+            <button onclick="tutupModalEdit()" class="text-slate-400 hover:text-slate-600 p-2">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+
+        <form id="formEditPasien" onsubmit="simpanEditPasien(event)" class="p-6 space-y-4">
+            <input type="hidden" id="edit_id" name="id">
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Nomor Rekam Medis (RM)*</label>
+                    <input type="text" id="edit_no_rm" name="no_rm" required class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">NIK (16 Digit)*</label>
+                    <input type="text" id="edit_nik" name="nik" required maxlength="16" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Pasien Lengkap*</label>
+                    <input type="text" id="edit_nama_pasien" name="nama_pasien" required class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Unit Sumber RS*</label>
+                    <select id="edit_unit_sumber" name="unit_sumber" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-brand-500">
+                        <option value="IGD">Instalasi Gawat Darurat (IGD)</option>
+                        <option value="RAJAL">Poliklinik Rawat Jalan</option>
+                        <option value="RANAP">Rawat Inap & Bangsal</option>
+                        <option value="LAB">Laboratorium Patologi</option>
+                        <option value="ICU">Ruang Isolasi / ICU</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Jenis Kelamin</label>
+                    <select id="edit_jenis_kelamin" name="jenis_kelamin" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-brand-500">
+                        <option value="L">Laki-laki</option>
+                        <option value="P">Perempuan</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Cara Pembayaran</label>
+                    <select id="edit_cara_pembayaran" name="cara_pembayaran" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-brand-500">
+                        <option value="Pembayaran BPJS">Pembayaran BPJS</option>
+                        <option value="Pembayaran Umum">Pembayaran Umum</option>
+                        <option value="Pembayaran Asuransi">Pembayaran Asuransi</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Tempat Lahir</label>
+                    <input type="text" id="edit_tempat_lahir" name="tempat_lahir" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Tanggal Lahir</label>
+                    <input type="date" id="edit_tanggal_lahir" name="tanggal_lahir" onchange="hitungUsia(this, 'edit_usia')" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Usia (Tahun)</label>
+                    <input type="number" id="edit_usia" name="usia" min="0" max="120" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Agama</label>
+                    <select id="edit_agama" name="agama" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-brand-500">
+                        <option value="Islam">Islam</option>
+                        <option value="Kristen Protestan">Kristen Protestan</option>
+                        <option value="Katolik">Katolik</option>
+                        <option value="Hindu">Hindu</option>
+                        <option value="Buddha">Buddha</option>
+                        <option value="Konghucu">Konghucu</option>
+                        <option value="Lainnya">Lainnya</option>
+                    </select>
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Status Perkawinan</label>
+                    <select id="edit_status_perkawinan" name="status_perkawinan" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-brand-500">
+                        <option value="Belum Kawin">Belum Kawin</option>
+                        <option value="Kawin">Kawin</option>
+                        <option value="Cerai Hidup">Cerai Hidup</option>
+                        <option value="Cerai Mati">Cerai Mati</option>
+                    </select>
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Alamat Lengkap</label>
+                    <textarea id="edit_alamat" name="alamat" rows="2" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500"></textarea>
+                </div>
+            </div>
+
+            <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-2">
+                <button type="button" onclick="tutupModalEdit()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100">Batal</button>
+                <button type="submit" class="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold shadow-xs">Simpan Perubahan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
+    function hitungUsia(inputEl, targetUsiaId) {
+        if (!inputEl.value) return;
+        const dob = new Date(inputEl.value);
+        const today = new Date();
+        let age = today.getFullYear() - dob.getFullYear();
+        const m = today.getMonth() - dob.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+            age--;
+        }
+        if (age >= 0) {
+            const target = document.getElementById(targetUsiaId);
+            if (target) target.value = age;
+        }
+    }
+
     function bukaModalTambah() {
         document.getElementById('modalTambah').classList.remove('hidden');
     }
     function tutupModalTambah() {
         document.getElementById('modalTambah').classList.add('hidden');
+    }
+
+    function bukaModalEdit(row) {
+        document.getElementById('edit_id').value = row.id;
+        document.getElementById('edit_no_rm').value = row.no_rm || '';
+        document.getElementById('edit_nik').value = row.nik || '';
+        document.getElementById('edit_nama_pasien').value = row.nama_pasien || '';
+        document.getElementById('edit_unit_sumber').value = row.unit_sumber || 'IGD';
+        document.getElementById('edit_jenis_kelamin').value = row.jenis_kelamin || 'L';
+        document.getElementById('edit_cara_pembayaran').value = row.cara_pembayaran || 'Pembayaran BPJS';
+        document.getElementById('edit_tempat_lahir').value = row.tempat_lahir || 'Jakarta';
+        document.getElementById('edit_tanggal_lahir').value = row.tanggal_lahir || '';
+        document.getElementById('edit_usia').value = row.usia || 30;
+        document.getElementById('edit_agama').value = row.agama || 'Islam';
+        document.getElementById('edit_status_perkawinan').value = row.status_perkawinan || 'Kawin';
+        document.getElementById('edit_alamat').value = row.alamat || '';
+
+        document.getElementById('modalEdit').classList.remove('hidden');
+    }
+
+    function tutupModalEdit() {
+        document.getElementById('modalEdit').classList.add('hidden');
+    }
+
+    function simpanEditPasien(e) {
+        e.preventDefault();
+        const form = document.getElementById('formEditPasien');
+        const formData = new FormData(form);
+        formData.append('action', 'edit_patient');
+
+        fetch('api/actions.php', { method: 'POST', body: formData })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: data.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire('Gagal', data.message, 'error');
+                }
+            })
+            .catch(err => {
+                Swal.fire('Error', 'Gagal memperbarui data: ' + err.message, 'error');
+            });
+    }
+
+    function hapusPasien(id, nama) {
+        Swal.fire({
+            title: 'Hapus Data Pasien?',
+            html: `Apakah Anda yakin ingin menghapus data pasien <b>${nama}</b>?<br><span class="text-xs text-rose-500">Data akan dihapus permanen dari sistem.</span>`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            confirmButtonText: '<i class="fa-solid fa-trash-can mr-1"></i> Ya, Hapus',
+            cancelButtonText: 'Batal'
+        }).then(res => {
+            if (res.isConfirmed) {
+                const formData = new FormData();
+                formData.append('action', 'delete_patient');
+                formData.append('id', id);
+
+                fetch('api/actions.php', { method: 'POST', body: formData })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Terhapus',
+                                text: data.message,
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire('Gagal', data.message, 'error');
+                        }
+                    })
+                    .catch(err => {
+                        Swal.fire('Error', 'Gagal menghapus data: ' + err.message, 'error');
+                    });
+            }
+        });
     }
 
     function simpanPasienManual(e) {
@@ -382,7 +630,10 @@ $totalCount = count($dataMasukList);
                 <div class="text-left text-xs space-y-2 text-slate-700">
                     <p><b>No. Registrasi:</b> ${row.no_registrasi}</p>
                     <p><b>Unit Sumber:</b> ${row.unit_sumber}</p>
+                    <p><b>Cara Pembayaran:</b> <span class="font-semibold text-brand-600">${row.cara_pembayaran || 'Pembayaran BPJS'}</span></p>
                     <p><b>No. RM:</b> ${row.no_rm} | <b>NIK:</b> ${row.nik}</p>
+                    <p><b>Tempat, Tgl Lahir:</b> ${row.tempat_lahir || 'Jakarta'}, ${row.tanggal_lahir ? new Date(row.tanggal_lahir).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}) : '-'}</p>
+                    <p><b>Agama:</b> ${row.agama || 'Islam'} | <b>Status Perkawinan:</b> ${row.status_perkawinan || 'Kawin'}</p>
                     <p><b>Alamat:</b> ${row.alamat || '-'}</p>
                     <p><b>Diagnosa:</b> ${row.diagnosa_awal} (${row.kode_icd10})</p>
                     <p><b>Kategori:</b> ${row.kategori_penyakit}</p>
