@@ -162,6 +162,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <!-- Footer Badge -->
             <div class="relative z-10 pt-6 mt-6 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-400">
                 <span>Versi 2.4.0 (PHP Natif)</span>
+                <a href="kelola_user.php" class="text-slate-400 hover:text-brand-300 transition inline-flex items-center gap-1 text-[11px]" title="Kelola Akun Pengguna">
+                    <i class="fa-solid fa-gear text-[10px]"></i>
+                    <span class="underline decoration-slate-500 hover:decoration-brand-300">Kelola User</span>
+                </a>
                 <span class="text-emerald-400 font-medium"><i class="fa-solid fa-signal mr-1"></i>Server Online</span>
             </div>
         </div>
@@ -280,6 +284,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <a href="dashboard.php" class="text-xs text-brand-600 hover:text-brand-700 font-medium inline-flex items-center gap-1">
                     <span>Langsung Masuk Dashboard (Mode Evaluator)</span>
                     <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                </a>
+            </div>
+
+            <!-- Link Kecil Akses Pengaturan Akun Pengguna -->
+            <div class="mt-3 pt-3 border-t border-slate-100 text-center">
+                <a href="kelola_user.php" class="text-[11px] text-slate-400 hover:text-brand-600 transition inline-flex items-center gap-1.5 py-1 px-2 rounded-md hover:bg-slate-50 group" title="Atur Akun Seluruh User">
+                    <i class="fa-solid fa-users-gear text-[11px] text-slate-400 group-hover:text-brand-600 transition"></i>
+                    <span class="underline decoration-slate-300 group-hover:decoration-brand-500 underline-offset-2">Atur Akun Seluruh User (Ubah Nama, Peran/Role, dll.)</span>
                 </a>
             </div>
         </div>

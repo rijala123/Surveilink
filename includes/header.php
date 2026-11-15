@@ -24,6 +24,7 @@ $totalMenungguValidasi = $pdo->query("SELECT COUNT(*) FROM data_masuk WHERE stat
 $totalDataTerpadu = $pdo->query("SELECT COUNT(*) FROM data_terpadu")->fetchColumn();
 $totalKirimSirs = $pdo->query("SELECT COUNT(*) FROM kirim_sirs")->fetchColumn();
 $totalNotifBelumDibaca = $pdo->query("SELECT COUNT(*) FROM notifikasi_alert WHERE status_baca = 0")->fetchColumn();
+$totalUsers = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
 
 // Active page helper
 $currentPage = basename($_SERVER['PHP_SELF']);

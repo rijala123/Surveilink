@@ -797,6 +797,216 @@ try {
             ]);
             break;
 
+        // -------------------------------------------------------------------------
+        // 13. KELOLA USER: AMBIL DATA SINGLE USER
+        // -------------------------------------------------------------------------
+        case 'get_user':
+            $userId = (int)($_GET['id'] ?? $_POST['id'] ?? 0);
+            $stmt = $pdo->prepare("SELECT id, username, nama_lengkap, email, role, unit, foto, created_at FROM users WHERE id = ?");
+            $stmt->execute([$userId]);
+            $userData = $stmt->fetch();
+            if ($userData) {
+                echo json_encode(['success' => true, 'data' => $userData]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Pengguna tidak ditemukan!']);
+            }
+            break;
+
+        // -------------------------------------------------------------------------
+        // 14. KELOLA USER: TAMBAH USER BARU
+        // -------------------------------------------------------------------------
+        case 'add_user':
+            $username    = trim($_POST['username'] ?? '');
+            $namaLengkap = trim($_POST['nama_lengkap'] ?? '');
+            $email       = trim($_POST['email'] ?? '');
+            $role        = trim($_POST['role'] ?? 'admin_unit');
+            $unit        = trim($_POST['unit'] ?? 'Instalasi Gawat Darurat (IGD)');
+            $password    = trim($_POST['password'] ?? '');
+
+            if (empty($username) || empty($namaLengkap) || empty($email) || empty($password)) {
+                echo json_encode(['success' => false, 'message' => 'Semua bidang wajib diisi!']);
+                break;
+            }
+
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                echo json_encode(['success' => false, 'message' => 'Format email tidak valid!']);
+                break;
+            }
+
+            if (strlen($password) < 6) {
+                echo json_encode(['success' => false, 'message' => 'Kata sandi minimal harus 6 karakter!']);
+                break;
+            }
+
+            // Validasi role sesuai enum
+            $allowedRoles = ['admin_surveilans', 'petugas_rekam_medis', 'admin_unit', 'supervisor'];
+            if (!in_array($role, $allowedRoles)) {
+                echo json_encode(['success' => false, 'message' => 'Pilihan peran / role tidak valid!']);
+                break;
+            }
+
+            // Cek duplikasi username atau email
+            $stmt = $pdo->prepare("SELECT id FROM users WHERE username = ? OR email = ?");
+            $stmt->execute([$username, $email]);
+            if ($stmt->fetch()) {
+                echo json_encode(['success' => false, 'message' => 'Username atau email sudah digunakan oleh pengguna lain!']);
+                break;
+            }
+
+            $hash = password_hash($password, PASSWORD_BCRYPT);
+            $stmt = $pdo->prepare("INSERT INTO users (username, password, nama_lengkap, email, role, unit, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())");
+            $stmt->execute([$username, $hash, $namaLengkap, $email, $role, $unit]);
+            $newId = $pdo->lastInsertId();
+
+            addAuditLog('Tambah Akun Pengguna', 'Manajemen User', "Menambahkan akun baru: {$username} ({$namaLengkap}) dengan peran {$role} pada unit {$unit}.");
+
+            addNotification(
+                'INFO',
+                'Akun Baru Dibuat: ' . $namaLengkap,
+                "Akun pengguna '{$username}' dengan peran '{$role}' berhasil didaftarkan ke sistem.",
+                'Info',
+                $unit
+            );
+
+            echo json_encode(['success' => true, 'message' => "Akun {$namaLengkap} ({$username}) berhasil ditambahkan!", 'id' => $newId]);
+            break;
+
+        // -------------------------------------------------------------------------
+        // 15. KELOLA USER: EDIT / UPDATE DATA USER
+        // -------------------------------------------------------------------------
+        case 'edit_user':
+            $userId      = (int)($_POST['id'] ?? 0);
+            $username    = trim($_POST['username'] ?? '');
+            $namaLengkap = trim($_POST['nama_lengkap'] ?? '');
+            $email       = trim($_POST['email'] ?? '');
+            $role        = trim($_POST['role'] ?? 'admin_unit');
+            $unit        = trim($_POST['unit'] ?? 'Instalasi Gawat Darurat (IGD)');
+            $password    = trim($_POST['password'] ?? '');
+
+            if ($userId <= 0) {
+                echo json_encode(['success' => false, 'message' => 'ID pengguna tidak valid!']);
+                break;
+            }
+
+            if (empty($username) || empty($namaLengkap) || empty($email)) {
+                echo json_encode(['success' => false, 'message' => 'Username, nama lengkap, dan email wajib diisi!']);
+                break;
+            }
+
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                echo json_encode(['success' => false, 'message' => 'Format email tidak valid!']);
+                break;
+            }
+
+            // Validasi role sesuai enum
+            $allowedRoles = ['admin_surveilans', 'petugas_rekam_medis', 'admin_unit', 'supervisor'];
+            if (!in_array($role, $allowedRoles)) {
+                echo json_encode(['success' => false, 'message' => 'Pilihan peran / role tidak valid!']);
+                break;
+            }
+
+            // Cek duplikasi username atau email pada user lain
+            $stmt = $pdo->prepare("SELECT id FROM users WHERE (username = ? OR email = ?) AND id != ?");
+            $stmt->execute([$username, $email, $userId]);
+            if ($stmt->fetch()) {
+                echo json_encode(['success' => false, 'message' => 'Username atau email sudah digunakan oleh pengguna lain!']);
+                break;
+            }
+
+            // Ambil data lama untuk pencatatan audit log
+            $stmtOld = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+            $stmtOld->execute([$userId]);
+            $oldUser = $stmtOld->fetch();
+            if (!$oldUser) {
+                echo json_encode(['success' => false, 'message' => 'Pengguna tidak ditemukan dalam sistem!']);
+                break;
+            }
+
+            $passwordChanged = false;
+            if (!empty($password)) {
+                if (strlen($password) < 6) {
+                    echo json_encode(['success' => false, 'message' => 'Kata sandi baru minimal harus 6 karakter!']);
+                    break;
+                }
+                $hash = password_hash($password, PASSWORD_BCRYPT);
+                $stmt = $pdo->prepare("UPDATE users SET username = ?, nama_lengkap = ?, email = ?, role = ?, unit = ?, password = ? WHERE id = ?");
+                $stmt->execute([$username, $namaLengkap, $email, $role, $unit, $hash, $userId]);
+                $passwordChanged = true;
+            } else {
+                $stmt = $pdo->prepare("UPDATE users SET username = ?, nama_lengkap = ?, email = ?, role = ?, unit = ? WHERE id = ?");
+                $stmt->execute([$username, $namaLengkap, $email, $role, $unit, $userId]);
+            }
+
+            // Jika akun yang diedit adalah akun yang sedang aktif di session, perbarui session
+            if (isset($_SESSION['user']) && $_SESSION['user']['id'] == $userId) {
+                $_SESSION['user']['username'] = $username;
+                $_SESSION['user']['nama_lengkap'] = $namaLengkap;
+                $_SESSION['user']['email'] = $email;
+                $_SESSION['user']['role'] = $role;
+                $_SESSION['user']['unit'] = $unit;
+            }
+
+            $perubahan = [];
+            if ($oldUser['nama_lengkap'] !== $namaLengkap) $perubahan[] = "nama '{$oldUser['nama_lengkap']}' -> '{$namaLengkap}'";
+            if ($oldUser['username'] !== $username) $perubahan[] = "username '{$oldUser['username']}' -> '{$username}'";
+            if ($oldUser['email'] !== $email) $perubahan[] = "email '{$oldUser['email']}' -> '{$email}'";
+            if ($oldUser['role'] !== $role) $perubahan[] = "role '{$oldUser['role']}' -> '{$role}'";
+            if ($oldUser['unit'] !== $unit) $perubahan[] = "unit '{$oldUser['unit']}' -> '{$unit}'";
+            if ($passwordChanged) $perubahan[] = "kata sandi diperbarui";
+
+            $detailLog = !empty($perubahan) 
+                ? "Pembaruan akun ID {$userId} ({$username}): " . implode(', ', $perubahan) 
+                : "Pembaruan akun ID {$userId} ({$username}) tanpa perubahan nilai.";
+
+            addAuditLog('Ubah Akun Pengguna', 'Manajemen User', $detailLog);
+
+            echo json_encode([
+                'success' => true,
+                'message' => "Data akun {$namaLengkap} berhasil diperbarui!" . ($passwordChanged ? ' (Kata sandi baru telah disimpan)' : '')
+            ]);
+            break;
+
+        // -------------------------------------------------------------------------
+        // 16. KELOLA USER: HAPUS USER
+        // -------------------------------------------------------------------------
+        case 'delete_user':
+            $userId = (int)($_POST['id'] ?? 0);
+            if ($userId <= 0) {
+                echo json_encode(['success' => false, 'message' => 'ID pengguna tidak valid!']);
+                break;
+            }
+
+            // Proteksi akun administrator utama
+            if ($userId === 1) {
+                echo json_encode(['success' => false, 'message' => 'Akun Administrator Utama Sistem (ID: 1) dilindungi dan tidak boleh dihapus!']);
+                break;
+            }
+
+            // Cek apakah akun yang ingin dihapus sedang login
+            if (isset($_SESSION['user']) && $_SESSION['user']['id'] == $userId) {
+                echo json_encode(['success' => false, 'message' => 'Anda tidak dapat menghapus akun yang sedang aktif digunakan saat ini!']);
+                break;
+            }
+
+            $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+            $stmt->execute([$userId]);
+            $targetUser = $stmt->fetch();
+            if (!$targetUser) {
+                echo json_encode(['success' => false, 'message' => 'Pengguna tidak ditemukan dalam sistem!']);
+                break;
+            }
+
+            $stmtDel = $pdo->prepare("DELETE FROM users WHERE id = ?");
+            $stmtDel->execute([$userId]);
+
+            addAuditLog('Hapus Akun Pengguna', 'Manajemen User', "Menghapus akun ID {$userId}: {$targetUser['username']} ({$targetUser['nama_lengkap']}), peran {$targetUser['role']}, unit {$targetUser['unit']}.");
+
+            echo json_encode([
+                'success' => true,
+                'message' => "Akun {$targetUser['nama_lengkap']} ({$targetUser['username']}) berhasil dihapus dari sistem!"
+            ]);
+            break;
+
         default:
             echo json_encode(['success' => false, 'message' => 'Aksi tidak dikenali!']);
             break;
