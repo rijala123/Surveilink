@@ -53,7 +53,7 @@ $recentAudits = $pdo->query("SELECT * FROM audit_log ORDER BY id DESC LIMIT 5")-
                         </span>
                     </div>
                     <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">
-                        Integrasi & Sinkronisasi Surveilans RS
+                        Integrasi Data SIMRS
                     </h1>
                     <p class="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
                         Mengatasi fragmentasi data antar-unit (IGD, Rawat Inap, Rawat Jalan, Lab, Farmasi), membentuk <b>Single Source of Truth</b>, dan otomatisasi pelaporan berkala ke <b>SIRS Online Kemenkes</b>.
@@ -239,7 +239,7 @@ $recentAudits = $pdo->query("SELECT * FROM audit_log ORDER BY id DESC LIMIT 5")-
             <div class="lg:col-span-8 p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                     <div>
-                        <h2 class="text-base font-bold text-slate-900">Tren Kasus Surveilans Berpotensi KLB</h2>
+                        <h2 class="text-base font-bold text-slate-900">Tren Kasus Rumah Sakit Tertinggi</h2>
                         <p class="text-xs text-slate-500">Monitoring penyakit menular: Demam Berdarah (DBD), TBC, ISPA Akut, Campak.</p>
                     </div>
                     <div class="flex items-center gap-2">

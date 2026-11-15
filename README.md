@@ -14,6 +14,7 @@ Dibangun menggunakan **PHP Native, Vanilla JavaScript, Tailwind CSS (CDN), dan M
 - **Dashboard Utama**: [http://localhost/SurveiLink/dashboard.php](http://localhost/SurveiLink/dashboard.php)
 - **Database phpMyAdmin**: `surveilink_db` di [http://localhost/phpmyadmin/](http://localhost/phpmyadmin/)
 - **File Skema Database**: [`surveilink_db.sql`](surveilink_db.sql)
+- **Dokumentasi PRD Lengkap**: [`doc/prd.md`](doc/prd.md) (Product Requirements Document)
 
 ### 🔑 Kredensial Login Bawaan:
 - **Admin Epidemiologi & Surveilans**: `admin` / `admin123` (Akses Penuh)
@@ -65,4 +66,14 @@ Sesuai instruksi:
 - **Fitur Uji Coba Data (Header Navbar)**:
   - Tombol **"Uji Coba Data" -> "Tarik Data Pasien Unit RS"**: Menarik data surveilans realistis (kasus DBD, TBC, ISPA berat, Campak) dari IGD & Lab sehingga Anda dapat menguji seluruh alur integrasi dari Data Masuk &rarr; Validasi &rarr; Data Terpadu &rarr; Kirim ke SIRS.
   - Tombol **"Reset Semua Data ke 0"**: Mengosongkan kembali seluruh data ke angka 0 kapan saja untuk evaluasi kondisi awal.
+
+---
+
+## 📚 Dokumentasi Teknis & Spesifikasi Sistem
+
+Dokumentasi lengkap sistem SurveiLink tersedia di direktori `doc/`:
+- **[Product Requirements Document (PRD)](doc/prd.md)**: Dokumen spesifikasi kebutuhan produk, latar belakang klinis kasus 2, kamus data 8 tabel, spesifikasi 10 modul fungsional, dan skema transmisi SIRS Online Kemenkes API v2.
+- **[Panduan Pembuatan Aplikasi Full AI](doc/cara_pembuatan_full_ai.md)**: Panduan metodologi dan alur kerja pengembangan aplikasi secara 100% berbasis kecerdasan buatan, memanfaatkan ekosistem **Google Stitch** (Desain UI), **Antigravity IDE** (AI Coding Assistant), dan **Laragon v6** (Local Development Stack).
+- **[Spesifikasi Arsitektur Sistem](doc/architecture.md)**: Dokumen teknis arsitektur berlapis (*Tiered Architecture*), topologi jaringan intranet 6 unit RS, diagram sequence transmisi SIRS, dan arsitektur keamanan data.
+
 
